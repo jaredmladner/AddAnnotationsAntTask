@@ -4,9 +4,7 @@
 package com.geocent.ant.task.annotations;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -37,7 +35,6 @@ public class AddAnnotationsTask extends Task {
 			try {
 				// Open the file that is the first
 				// command line parameter
-			    String currDir = new File(".").getAbsolutePath();
 				FileInputStream fstream = new FileInputStream(srcDir + "/" + annotation.getClassName());
 				// Get the object of DataInputStream
 				DataInputStream in = new DataInputStream(fstream);
@@ -46,12 +43,13 @@ public class AddAnnotationsTask extends Task {
 				String strLine;
 				// Read File Line By Line
 				int lineNum = 0;
+				boolean importAdded = false;
 				while ((strLine = br.readLine()) != null) {
 					lineNum++;
-					if (lineNum == 15 && annotation.importVal != null) {
-						sb.append("import ").append(annotation.importVal).append(";").append("\n").append(strLine).append("\n");
-					}
-					if (lineNum == annotation.line) {
+					if (!importAdded && annotation.importVal != null && strLine.startsWith("package")) {
+						sb.append(strLine).append("\n").append("\n").append("import ").append(annotation.importVal).append(";").append("\n");
+						importAdded = true;
+					} else if (lineNum == annotation.line) {
 						sb.append(annotation.annotationVal).append("\n").append(strLine).append("\n");
 					} else {
 						sb.append(strLine).append("\n");
