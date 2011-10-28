@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="MyTask" basedir="." default="jar">
+
+    <property name="src.dir" value="src"/>
+    <property name="test.dir" value="test"/>
+    <property name="classes.dir" value="bin"/>
+
+    <target name="clean" description="Delete all generated files">
+        <delete dir="${classes.dir}" failonerror="false"/>
+        <delete file="${ant.project.name}.jar"/>
+    </target>
+
+    <target name="compile" description="Compiles the Task">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+    </target>
+
+    <target name="jar" description="JARs the Task" depends="compile">
+        <jar destfile="./dist/annotations-ant-task-0.1.jar" basedir="${classes.dir}"/>
+    </target>
+	
+	<target name="execute">
+		<taskdef name="add-annotations" classname="com.geocent.ant.task.annotations.AddAnnotationsTask" classpath="./dist/annotations-ant-task-0.1.jar"/>
+		<add-annotations srcDir="${test.dir}">
+			<annotation importVal="javax.xml.ws.ServiceMode" className="com/geocent/Test.java" annotationVal="@ServiceMode" line="3" />
+		</add-annotations>
+	</target>
+
+</project>
